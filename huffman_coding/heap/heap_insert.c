@@ -1,28 +1,49 @@
 #include "heap.h"
 
 /**
- * find_insertion_parent - Finds the parent node for inserting a new node
- * @root: Pointer to the root of the binary heap
- * @index: Index where the new node will be inserted
+ * do_insertion - Finds the parent node for inserting a new node
+ * @root: Pointer to the root of the binary tree
+ * @new: new node to be inserted
  *
  * Return: Pointer to the found parent node
  */
-binary_tree_node_t *find_insertion_parent(binary_tree_node_t *root,
-											size_t index)
+binary_tree_node_t *do_insertion(binary_tree_node_t *root,
+											binary_tree_node_t *new)
 {
-	binary_tree_node_t *parent = root;
-	binary_tree_node_t *temp;
+	binary_tree_node_t *queue[50];
+	int index = 0, num_ele = 1, i, max_cap = 50;
 
-	while (index > 1)
+	for (i = 0; i < max_cap; i++)
+		queue[i] = NULL;
+
+	queue[index] = root;
+	while (queue[index])
 	{
-		temp = (index & 1) ? parent->right : parent->left;
-		if (!temp)
-			temp = parent;
-		index >>= 1;
-		parent = temp;
+		if (queue[index]->left)
+		{
+			queue[num_ele] = queue[index]->left;
+			num_ele++;
+		}
+		else
+		{
+			queue[index]->left = new;
+			new->parent = queue[index];
+			return (new);
+		}
+		if (queue[index]->right)
+		{
+			queue[num_ele] = queue[index]->right;
+			num_ele++;
+		}
+		else
+		{
+			queue[index]->right = new;
+			new->parent = queue[index];
+			return (new);
+		}
+		index++;
 	}
-
-	return (parent);
+	return (NULL);
 }
 
 /**
@@ -34,7 +55,8 @@ binary_tree_node_t *find_insertion_parent(binary_tree_node_t *root,
  */
 binary_tree_node_t *heap_insert(heap_t *heap, void *data)
 {
-	binary_tree_node_t *new_node, *parent;
+	binary_tree_node_t *new_node, *buffer;
+	void *temp;
 
 	if (!heap || !data)
 		return (NULL);
@@ -50,27 +72,18 @@ binary_tree_node_t *heap_insert(heap_t *heap, void *data)
 		return (new_node);
 	}
 
-	parent = find_insertion_parent(heap->root, heap->size + 1);
-	new_node->parent = parent;
-	if (!parent->left)
-		parent->left = new_node;
-	else
-		parent->right = new_node;
-
-	heap->size++;
-
-	/* Restore heap property if necessary */
-	while (new_node->parent && heap->data_cmp(new_node->data,
-												new_node->parent->data) < 0)
+	do_insertion(heap->root, new_node);
+	if (new_node)
+		heap->size++;
+	buffer = new_node;
+	while (buffer->parent &&
+			heap->data_cmp(buffer->data, buffer->parent->data) < 0)
 	{
-		/* Swap data between new_node and its parent */
-		void *temp_data = new_node->data;
-
-		new_node->data = new_node->parent->data;
-		new_node->parent->data = temp_data;
-
-		new_node = new_node->parent;
+		temp = buffer->data;
+		buffer->data = buffer->parent->data;
+		buffer->parent->data = temp;
+		buffer = buffer->parent;
 	}
-
+	new_node = buffer;
 	return (new_node);
 }
