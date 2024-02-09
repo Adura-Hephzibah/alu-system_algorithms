@@ -49,10 +49,10 @@ binary_tree_node_t *heap_insert(heap_t *heap, void *data)
 												new_node->parent->data) < 0)
 	{
 		/* Swap new node with parent */
-		int *temp_data = (int *)new_node->data;
+		void *temp_data = (int *)new_node->data;
 
 		new_node->data = new_node->parent->data;
-		new_node->parent->data = (void *)temp_data;
+		new_node->parent->data = temp_data;
 
 		new_node = new_node->parent;
 	}
