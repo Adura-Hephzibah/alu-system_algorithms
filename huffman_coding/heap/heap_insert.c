@@ -10,6 +10,8 @@
 binary_tree_node_t *heap_insert(heap_t *heap, void *data)
 {
 	binary_tree_node_t *new_node, *parent, *temp;
+	size_t index;
+
 	if (!heap || !data)
 		return (NULL);
 
@@ -24,12 +26,15 @@ binary_tree_node_t *heap_insert(heap_t *heap, void *data)
 		return (new_node);
 	}
 
+	index = heap->size + 1;
 	parent = heap->root;
-	for (size_t index = heap->size + 1; index > 1; index >>= 1, parent = temp)
+	while (index > 1)
 	{
 		temp = (index & 1) ? parent->right : parent->left;
 		if (!temp)
 			temp = parent;
+		index >>= 1;
+		parent = temp;
 	}
 
 	new_node->parent = parent;
@@ -76,5 +81,4 @@ binary_tree_node_t *heap_insert(heap_t *heap, void *data)
 	}
 
 	return (new_node);
-
 }
