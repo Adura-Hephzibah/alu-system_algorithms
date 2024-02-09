@@ -1,6 +1,31 @@
 #include "heap.h"
 
 /**
+ * find_insertion_parent - Finds the parent node for inserting a new node
+ * @root: Pointer to the root of the binary heap
+ * @index: Index where the new node will be inserted
+ *
+ * Return: Pointer to the found parent node
+ */
+binary_tree_node_t *find_insertion_parent(binary_tree_node_t *root,
+											size_t index)
+{
+	binary_tree_node_t *parent = root;
+	binary_tree_node_t *temp;
+
+	while (index > 1)
+	{
+		temp = (index & 1) ? parent->right : parent->left;
+		if (!temp)
+			temp = parent;
+		index >>= 1;
+		parent = temp;
+	}
+
+	return (parent);
+}
+
+/**
  * heap_insert - Inserts a value in a Min Binary Heap
  * @heap: Pointer to the heap in which the node has to be inserted
  * @data: Pointer containing the data to store in the new node
@@ -9,8 +34,7 @@
  */
 binary_tree_node_t *heap_insert(heap_t *heap, void *data)
 {
-	binary_tree_node_t *new_node, *parent, *temp;
-	size_t index;
+	binary_tree_node_t *new_node, *parent;
 
 	if (!heap || !data)
 		return (NULL);
@@ -26,58 +50,26 @@ binary_tree_node_t *heap_insert(heap_t *heap, void *data)
 		return (new_node);
 	}
 
-	index = heap->size + 1;
-	parent = heap->root;
-	while (index > 1)
-	{
-		temp = (index & 1) ? parent->right : parent->left;
-		if (!temp)
-			temp = parent;
-		index >>= 1;
-		parent = temp;
-	}
-
+	parent = find_insertion_parent(heap->root, heap->size + 1);
 	new_node->parent = parent;
-	if (parent->left)
-		parent->right = new_node;
-	else
+	if (!parent->left)
 		parent->left = new_node;
+	else
+		parent->right = new_node;
 
 	heap->size++;
 
-	while (new_node->parent && heap->data_cmp(new_node->data, new_node->parent->data) < 0)
+	/* Restore heap property if necessary */
+	while (new_node->parent && heap->data_cmp(new_node->data,
+												new_node->parent->data) < 0)
 	{
-		temp = new_node->parent;
-		new_node->parent = temp->parent;
-		temp->parent = new_node;
-		if (temp->parent)
-		{
-			if (temp->parent->left == temp)
-				temp->parent->left = new_node;
-			else
-				temp->parent->right = new_node;
-		}
+		/* Swap data between new_node and its parent */
+		void *temp_data = new_node->data;
 
-		if (new_node->left == temp)
-		{
-			new_node->left = temp->left;
-			if (new_node->left)
-				new_node->left->parent = new_node;
-			temp->left = new_node->right;
-			if (temp->left)
-				temp->left->parent = temp;
-			new_node->right = temp;
-		}
-		else
-		{
-			new_node->right = temp->right;
-			if (new_node->right)
-				new_node->right->parent = new_node;
-			temp->right = new_node->left;
-			if (temp->right)
-				temp->right->parent = temp;
-			new_node->left = temp;
-		}
+		new_node->data = new_node->parent->data;
+		new_node->parent->data = temp_data;
+
+		new_node = new_node->parent;
 	}
 
 	return (new_node);
