@@ -37,7 +37,7 @@ binary_tree_node_t *heap_insert(heap_t *heap, void *data)
 
 	/* Insert new node */
 	new_node->parent = parent;
-	if (index % 2 == 0)
+	if (!parent->left)
 		parent->left = new_node;
 	else
 		parent->right = new_node;
