@@ -9,9 +9,7 @@
  */
 binary_tree_node_t *heap_insert(heap_t *heap, void *data)
 {
-	binary_tree_node_t *new_node, *parent;
-	size_t index;
-
+	binary_tree_node_t *new_node, *parent, *temp;
 	if (!heap || !data)
 		return (NULL);
 
@@ -26,36 +24,57 @@ binary_tree_node_t *heap_insert(heap_t *heap, void *data)
 		return (new_node);
 	}
 
-	/* Find the parent to insert new node */
-	index = heap->size + 1;
 	parent = heap->root;
-	while (index / 2 != 0)
+	for (size_t index = heap->size + 1; index > 1; index >>= 1, parent = temp)
 	{
-		parent = (index % 2 == 0) ? parent->left : parent->right;
-		index /= 2;
+		temp = (index & 1) ? parent->right : parent->left;
+		if (!temp)
+			temp = parent;
 	}
 
-	/* Insert new node */
 	new_node->parent = parent;
-	if (!parent->left)
-		parent->left = new_node;
-	else
+	if (parent->left)
 		parent->right = new_node;
+	else
+		parent->left = new_node;
 
 	heap->size++;
 
-	/* Restore heap property */
-	while (new_node->parent && heap->data_cmp(new_node->data,
-												new_node->parent->data) < 0)
+	while (new_node->parent && heap->data_cmp(new_node->data, new_node->parent->data) < 0)
 	{
-		/* Swap new node with parent */
-		void *temp_data = (int *)new_node->data;
+		temp = new_node->parent;
+		new_node->parent = temp->parent;
+		temp->parent = new_node;
+		if (temp->parent)
+		{
+			if (temp->parent->left == temp)
+				temp->parent->left = new_node;
+			else
+				temp->parent->right = new_node;
+		}
 
-		new_node->data = new_node->parent->data;
-		new_node->parent->data = temp_data;
-
-		new_node = new_node->parent;
+		if (new_node->left == temp)
+		{
+			new_node->left = temp->left;
+			if (new_node->left)
+				new_node->left->parent = new_node;
+			temp->left = new_node->right;
+			if (temp->left)
+				temp->left->parent = temp;
+			new_node->right = temp;
+		}
+		else
+		{
+			new_node->right = temp->right;
+			if (new_node->right)
+				new_node->right->parent = new_node;
+			temp->right = new_node->left;
+			if (temp->right)
+				temp->right->parent = temp;
+			new_node->left = temp;
+		}
 	}
 
 	return (new_node);
+
 }
