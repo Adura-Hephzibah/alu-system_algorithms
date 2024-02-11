@@ -58,11 +58,9 @@ void *heap_extract(heap_t *heap)
 
 	void *root_data;
 	binary_tree_node_t *last_node;
-	binary_tree_node_t *current;
 
 	root_data = heap->root->data;
 	last_node = heap->root;
-	current = heap->root;
 
 	/* Find the last node of the heap */
 	while (last_node->left)
