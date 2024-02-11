@@ -53,12 +53,14 @@ void heapify_down(heap_t *heap)
  */
 void *heap_extract(heap_t *heap)
 {
+	void *root_data;
+
 	if (!heap || !heap->root)
 		return (NULL);
 
-	void *root_data = heap->root->data;
+	root_data = heap->root->data;
 	binary_tree_node_t *last_node = heap->root;
-	binary_tree_node_t *current = heap->root;
+	/* binary_tree_node_t *current = heap->root; */
 
 	/* Find the last node of the heap */
 	while (last_node->left)
