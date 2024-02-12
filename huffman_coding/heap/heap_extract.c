@@ -37,6 +37,40 @@ void heapify_down(heap_t *heap, binary_tree_node_t *node)
 }
 
 /**
+ * find_last_node - Finds the last node in the heap
+ * @root: Pointer to the root of the binary tree
+ *
+ * Return: Pointer to the last node
+ */
+binary_tree_node_t *find_last_node(binary_tree_node_t *root)
+{
+	binary_tree_node_t *queue[50];
+	int index = 0, num_ele = 1, i, max_cap = 50;
+
+	for (i = 0; i < max_cap; i++)
+		queue[i] = NULL;
+
+	queue[index] = root;
+	while (queue[index])
+	{
+		if (queue[index]->left)
+		{
+			queue[num_ele] = queue[index]->left;
+			num_ele++;
+		}
+		if (queue[index]->right)
+		{
+			queue[num_ele] = queue[index]->right;
+			num_ele++;
+		}
+		index++;
+	}
+
+	return (queue[index - 1]);
+}
+
+
+/**
  * heap_extract - Extracts the root value of a Min Binary Heap
  * @heap: Pointer to the heap from which to extract the value
  * Return: Pointer to the data that was stored in the root node of the heap,
@@ -45,43 +79,29 @@ void heapify_down(heap_t *heap, binary_tree_node_t *node)
 void *heap_extract(heap_t *heap)
 {
 	void *source_data = heap->root->data;
-	binary_tree_node_t *last_node, *temp;
+	binary_tree_node_t *last_node;
 
 	if (heap == NULL || heap->root == NULL)
 		return (NULL);
 
+	/* Find the last node */
+	last_node = find_last_node(heap->root);
 
 	/* Swap root with last node */
-	last_node = NULL;
-	temp = heap->root;
+	swap_nodes(heap->root, last_node);
 
-	while (temp->left != NULL || temp->right != NULL)
-	{
-		last_node = temp;
-		if (temp->right != NULL && heap->data_cmp(temp->right->data,
-													temp->left->data) < 0)
-			temp = temp->left;
-		else
-			temp = temp->right;
-	}
-
-	if (last_node != NULL)
-	{
-		if (last_node->left == temp)
-			last_node->left = NULL;
-		else
-			last_node->right = NULL;
-	}
-
-	if (last_node == NULL)
-		heap->root = NULL;
+	/* Remove last node */
+	if (last_node->parent->left == last_node)
+		last_node->parent->left = NULL;
 	else
-	{
-		swap_nodes(heap->root, temp);
-		heapify_down(heap, heap->root);
-	}
+		last_node->parent->right = NULL;
 
-	free(temp);
+	free(last_node);
 	heap->size--;
+
+	/* Heapify down */
+	heapify_down(heap, heap->root);
+
 	return (source_data);
+
 }
