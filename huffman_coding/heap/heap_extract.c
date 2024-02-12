@@ -24,13 +24,14 @@ binary_tree_node_t *get_last_node(heap_t *heap)
 	size_t level = 0;
 	binary_tree_node_t *last_node = heap->root;
 
-	while ((1 << (level + 1)) - 1 <= size)
+	while (size > 1)
 	{
-		if (size & (1 << level))
+		if (size % 2 == 1)
 			last_node = last_node->right;
 		else
 			last_node = last_node->left;
 
+		size = size / 2;
 		level++;
 	}
 
