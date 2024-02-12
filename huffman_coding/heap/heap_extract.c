@@ -31,7 +31,7 @@ void heapify_down(heap_t *heap, binary_tree_node_t *node)
 
 	if (smallest != node)
 	{
-		swap_nodes(smallest, node);
+		swap_nodes(node, smallest);
 		heapify_down(heap, smallest);
 	}
 }
@@ -83,6 +83,5 @@ void *heap_extract(heap_t *heap)
 
 	free(temp);
 	heap->size--;
-
 	return (source_data);
 }
