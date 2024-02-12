@@ -60,9 +60,9 @@ void *heap_extract(heap_t *heap)
 		last_node = temp;
 		if (temp->right != NULL && heap->data_cmp(temp->right->data,
 													temp->left->data) < 0)
-			temp = temp->right;
-		else
 			temp = temp->left;
+		else
+			temp = temp->right;
 	}
 
 	if (last_node != NULL)
