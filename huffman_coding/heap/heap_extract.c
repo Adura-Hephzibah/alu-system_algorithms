@@ -45,14 +45,15 @@ void heapify_down(heap_t *heap, binary_tree_node_t *node)
 void *heap_extract(heap_t *heap)
 {
 	void *source_data = heap->root->data;
+	binary_tree_node_t *last_node, *temp;
 
 	if (heap == NULL || heap->root == NULL)
 		return (NULL);
 
 
 	/* Swap root with last node */
-	binary_tree_node_t *last_node = NULL;
-	binary_tree_node_t *temp = heap->root;
+	last_node = NULL;
+	temp = heap->root;
 
 	while (temp->left != NULL || temp->right != NULL)
 	{
