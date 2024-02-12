@@ -92,7 +92,7 @@ void *heap_extract(heap_t *heap)
 		free(heap->root);
 		heap->root = NULL;
 		heap->size = 0;
-		return (source_data);
+		return (NULL);
 	}
 
 	/* Swap root with last node */
