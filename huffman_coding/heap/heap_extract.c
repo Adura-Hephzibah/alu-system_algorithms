@@ -14,31 +14,6 @@ void swap_nodes(binary_tree_node_t *node1, binary_tree_node_t *node2)
 }
 
 /**
- * get_last_node - Finds the last node from left to right at the last level
- * @heap: Pointer to the heap
- * Return: Pointer to the last node
- */
-binary_tree_node_t *get_last_node(heap_t *heap)
-{
-	size_t size = heap->size;
-	size_t level = 0;
-	binary_tree_node_t *last_node = heap->root;
-
-	while (last_node != NULL && size > 1)
-	{
-		if (size % 2 == 1)
-			last_node = last_node->right;
-		else
-			last_node = last_node->left;
-
-		size = size / 2;
-		level++;
-	}
-
-	return (last_node);
-}
-
-/**
  * heapify_down - Heapifies down from the given node
  * @heap: Pointer to the heap
  * @node: Pointer to the node from which to start heapifying down
@@ -70,27 +45,43 @@ void heapify_down(heap_t *heap, binary_tree_node_t *node)
 void *heap_extract(heap_t *heap)
 {
 	void *source_data = heap->root->data;
-	binary_tree_node_t *last_node;
+	binary_tree_node_t *last_node, *temp;
 
 	if (heap == NULL || heap->root == NULL)
 		return (NULL);
 
 
 	/* Swap root with last node */
-	last_node = get_last_node(heap);
-	swap_nodes(heap->root, last_node);
+	last_node = NULL;
+	temp = heap->root;
 
-	/* Remove last node */
-	if (last_node->parent->left == last_node)
-		last_node->parent->left = NULL;
+	while (temp->left != NULL || temp->right != NULL)
+	{
+		last_node = temp;
+		if (temp->right != NULL && heap->data_cmp(temp->right->data,
+													temp->left->data) < 0)
+			temp = temp->right;
+		else
+			temp = temp->left;
+	}
+
+	if (last_node != NULL)
+	{
+		if (last_node->left == temp)
+			last_node->left = NULL;
+		else
+			last_node->right = NULL;
+	}
+
+	if (last_node == NULL)
+		heap->root = NULL;
 	else
-		last_node->parent->right = NULL;
+	{
+		swap_nodes(heap->root, temp);
+		heapify_down(heap, heap->root);
+	}
 
-	free(last_node);
+	free(temp);
 	heap->size--;
-
-	/* Heapify down */
-	heapify_down(heap, heap->root);
-
 	return (source_data);
 }
