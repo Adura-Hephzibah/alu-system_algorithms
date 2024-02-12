@@ -87,6 +87,14 @@ void *heap_extract(heap_t *heap)
 	/* Find the last node */
 	last_node = find_last_node(heap->root);
 
+	if (last_node == NULL)
+	{
+		free(heap->root);
+		heap->root = NULL;
+		heap->size = 0;
+		return (source_data);
+	}
+
 	/* Swap root with last node */
 	swap_nodes(heap->root, last_node);
 
