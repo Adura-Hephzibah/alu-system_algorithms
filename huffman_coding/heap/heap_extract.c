@@ -70,7 +70,7 @@ void heapify_down(heap_t *heap, binary_tree_node_t *node)
 void *heap_extract(heap_t *heap)
 {
 	void *source_data = heap->root->data;
-	binary_tree_node_t *last_node, *temp;
+	binary_tree_node_t *last_node;
 
 	if (heap == NULL || heap->root == NULL)
 		return (NULL);
