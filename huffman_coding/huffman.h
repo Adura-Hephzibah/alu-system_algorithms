@@ -18,5 +18,8 @@ typedef struct symbol_s
 	size_t freq;
 } symbol_t;
 
+/* PROTOTYPES */
+symbol_t *symbol_create(char data, size_t freq);
+
 
 #endif
