@@ -9,8 +9,9 @@
  */
 int huffman_extract_and_insert(heap_t *priority_queue)
 {
-	binary_tree_node_t *new_node;
+	binary_tree_node_t *new_node, *node1, *node2;
 	symbol_t *symbol;
+	size_t combined_freq;
 
 	if (!priority_queue || !priority_queue->root)
 		return (0);
@@ -20,15 +21,15 @@ int huffman_extract_and_insert(heap_t *priority_queue)
 		return (0);
 
 	/*Extract the two nodes with the lowest frequencies*/
-	binary_tree_node_t *node1 = heap_extract(priority_queue);
-	binary_tree_node_t *node2 = heap_extract(priority_queue);
+	node1 = heap_extract(priority_queue);
+	node2 = heap_extract(priority_queue);
 
 	if (!node1 || !node2)
 		return (0);
 
 	/* Combine the frequencies of the two nodes*/
-	size_t combined_freq = ((symbol_t *)node1->data)->freq +
-															((symbol_t *)node2->data)->freq;
+	combined_freq = ((symbol_t *)node1->data)->freq +
+														((symbol_t *)node2->data)->freq;
 
 	symbol = malloc(sizeof(symbol_t));
 	if (!symbol)
