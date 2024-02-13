@@ -20,14 +20,12 @@ int huffman_extract_and_insert(heap_t *priority_queue)
 	if (priority_queue->size < 2)
 		return (0);
 
-	/*Extract the two nodes with the lowest frequencies*/
 	node1 = heap_extract(priority_queue);
 	node2 = heap_extract(priority_queue);
 
 	if (!node1 || !node2)
 		return (0);
 
-	/* Combine the frequencies of the two nodes*/
 	combined_freq = ((symbol_t *)node1->data)->freq +
 														((symbol_t *)node2->data)->freq;
 
@@ -41,7 +39,7 @@ int huffman_extract_and_insert(heap_t *priority_queue)
 	if (new_node == NULL)
 	{
 		free(symbol);
-		return 0;
+		return (0);
 	}
 
 	new_node->left = node1;
@@ -50,6 +48,5 @@ int huffman_extract_and_insert(heap_t *priority_queue)
 	node2->parent = new_node;
 
 	heap_insert(priority_queue, new_node);
-
 	return (1);
 }
