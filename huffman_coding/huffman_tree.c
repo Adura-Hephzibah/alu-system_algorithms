@@ -19,9 +19,18 @@ binary_tree_node_t *huffman_tree(char *data, size_t *freq, size_t size)
 		return (NULL);
 
 	while (priority_queue->size > 1)
-		huffman_extract_and_insert(priority_queue);
+	{
+		if (!huffman_extract_and_insert(priority_queue))
+		{
+			/* If extraction and insertion fail, free memory and return NULL */
+			heap_delete(priority_queue, NULL);
+			return (NULL);
+		}
+	}
 
-	root_node = heap_extract(priority_queue);
-	heap_delete(priority_queue, NULL);
+	root_node = priority_queue->root;
+
+	free(priority_queue);
+
 	return (root_node);
 }
