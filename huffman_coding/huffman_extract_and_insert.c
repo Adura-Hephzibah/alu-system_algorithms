@@ -39,10 +39,10 @@ int huffman_extract_and_insert(heap_t *priority_queue)
 	new_node = binary_tree_node(NULL, symbol);
 
 	if (new_node == NULL)
-    {
-        free(symbol);
-        return 0;
-    }
+	{
+		free(symbol);
+		return 0;
+	}
 
 	new_node->left = node1;
 	new_node->right = node2;
