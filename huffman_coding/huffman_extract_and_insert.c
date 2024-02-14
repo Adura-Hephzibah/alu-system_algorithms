@@ -24,7 +24,11 @@ int huffman_extract_and_insert(heap_t *priority_queue)
 	node2 = heap_extract(priority_queue);
 
 	if (!node1 || !node2)
+	{
+		free(node1);
+		free(node2);
 		return (0);
+	}
 
 	combined_freq = ((symbol_t *)node1->data)->freq +
 														((symbol_t *)node2->data)->freq;
