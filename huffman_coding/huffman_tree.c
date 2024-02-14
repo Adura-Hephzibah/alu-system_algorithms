@@ -47,12 +47,12 @@ binary_tree_node_t *huffman_tree(char *data, size_t *freq, size_t size)
 	{
 		if (!huffman_extract_and_insert(priority_queue))
 		{
-			heap_delete(priority_queue, freeNestedNode);
 			return (NULL);
 		}
 	}
 
 	root_node = (binary_tree_node_t *)(priority_queue->root->data);
-	heap_delete(priority_queue, NULL);
+	free(priority_queue->root);
+	free(priority_queue);
 	return (root_node);
 }
