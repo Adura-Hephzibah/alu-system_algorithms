@@ -33,7 +33,7 @@ int huffman_extract_and_insert(heap_t *priority_queue)
 	if (!symbol)
 		return (0);
 
-	symbol = symbol_create(-1, combined_freq);
+	*symbol = *symbol_create(-1, combined_freq);
 	new_node = binary_tree_node(NULL, symbol);
 
 	if (new_node == NULL)
