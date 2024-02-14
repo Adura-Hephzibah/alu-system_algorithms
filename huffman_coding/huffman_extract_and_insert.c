@@ -32,9 +32,10 @@ int huffman_extract_and_insert(heap_t *priority_queue)
 	combined_freq = ((symbol_t *)node1->data)->freq +
 														((symbol_t *)node2->data)->freq;
 
-	symbol = malloc(sizeof(symbol_t));
-	if (!symbol)
+	/*symbol = malloc(sizeof(symbol_t));*/
+	/*if (!symbol)
 		return (0);
+		*/
 	symbol = symbol_create(-1, combined_freq);
 	new_node = binary_tree_node(NULL, symbol);
 
