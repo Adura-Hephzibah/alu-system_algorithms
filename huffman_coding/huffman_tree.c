@@ -35,8 +35,10 @@ void freeNestedNode(void *data)
  */
 binary_tree_node_t *huffman_tree(char *data, size_t *freq, size_t size)
 {
-	heap_t *priority_queue = NULL;
-	binary_tree_node_t *root_node = NULL;
+	heap_t *priority_queue;
+	binary_tree_node_t *root_node;
+
+	setbuf(stdout, NULL);
 
 	priority_queue = huffman_priority_queue(data, freq, size);
 
