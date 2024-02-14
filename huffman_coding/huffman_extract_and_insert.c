@@ -15,7 +15,6 @@ int huffman_extract_and_insert(heap_t *priority_queue)
 
 	if (!priority_queue || !priority_queue->root)
 		return (0);
-
 	/* Check if there are at least two nodes in the priority queue */
 	if (priority_queue->size < 2)
 		return (0);
@@ -36,7 +35,6 @@ int huffman_extract_and_insert(heap_t *priority_queue)
 	symbol = malloc(sizeof(symbol_t));
 	if (!symbol)
 		return (0);
-
 	symbol = symbol_create(-1, combined_freq);
 	new_node = binary_tree_node(NULL, symbol);
 
@@ -45,12 +43,10 @@ int huffman_extract_and_insert(heap_t *priority_queue)
 		free(symbol);
 		return (0);
 	}
-
 	new_node->left = node1;
 	new_node->right = node2;
 	node1->parent = new_node;
 	node2->parent = new_node;
-
 	heap_insert(priority_queue, new_node);
 	return (1);
 }
