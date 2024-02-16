@@ -1,6 +1,5 @@
 #include "pathfinding.h"
 #include <sys/types.h>
-#include <limits.h>
 
 static int *dists;
 static vertex_t **from;
