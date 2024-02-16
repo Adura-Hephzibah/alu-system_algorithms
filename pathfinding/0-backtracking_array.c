@@ -1,6 +1,6 @@
 #include "pathfinding.h"
 
-static queue_t *backtrack(char **map, char **seen, int rows, int cols,
+static queue_t *backtrack(char **map, char **tracked, int rows, int cols,
 						  int x, int y, point_t const *target, queue_t *queue);
 
 /**
@@ -17,61 +17,61 @@ queue_t *backtracking_array(char **map, int rows, int cols,
 							point_t const *start, point_t const *target)
 {
 	int i;
-	char **seen = malloc(sizeof(char *) * rows);
+	char **tracked = malloc(sizeof(char *) * rows);
 	queue_t *queue = queue_create();
 
-	if (!rows || !cols || !map || !start || !target || !queue || !seen)
+	if (!rows || !cols || !map || !start || !target || !queue || !tracked)
 	{
 		queue_delete(queue);
-		free(seen);
+		free(tracked);
 		return (NULL);
 	}
 
 	for (i = 0; i < rows; i++)
-		seen[i] = strdup(map[i]);
+		tracked[i] = strdup(map[i]);
 
-	if (!backtrack(map, seen, rows, cols, start->x, start->y, target, queue))
+	if (!backtrack(map, tracked, rows, cols, start->x, start->y, target, queue))
 		queue_delete(queue), queue = NULL;
 
 	for (i = 0; i < rows; i++)
-		free(seen[i]);
+		free(tracked[i]);
 
-	free(seen);
+	free(tracked);
 	return (queue);
 }
 
 /**
- * backtrack - helper backtracking algorithm
+ * backtrack - help backtracking algorithm
  *
  * @map: pointer to 2d array map representation
- * @seen: pointer to 2d array that keeps track of seen cells
- * @rows: number of rows in map (and seen)
- * @cols: number of columns in map (and seen)
+ * @tracked: pointer to 2d array that keeps track of tracked cells
  * @x: current x position
  * @y: current y position
+ * @rows: number of rows in map
+ * @cols: number of columns in map
  * @target: target x, y position
  * @queue: pointer to queue where final path will be stored.
  * Return: pointer to queue
  */
-static queue_t *backtrack(char **map, char **seen, int rows, int cols,
+static queue_t *backtrack(char **map, char **tracked, int rows, int cols,
 						  int x, int y, point_t const *target, queue_t *queue)
 {
 	point_t *point;
 
-	/* invalid point */
-	if (x < 0 || y < 0 || x >= cols || y >= rows || seen[y][x] == '1')
+	/* check invalid point */
+	if (x < 0 || y < 0 || x >= cols || y >= rows || tracked[y][x] == '1')
 		return (NULL);
 
-	seen[y][x] = '1';
+	tracked[y][x] = '1';
 
 	printf("Checking coordinates [%d, %d]\n", x, y);
 
 	if (
 		(x == target->x && y == target->y) ||
-		backtrack(map, seen, rows, cols, x + 1, y, target, queue) ||
-		backtrack(map, seen, rows, cols, x, y + 1, target, queue) ||
-		backtrack(map, seen, rows, cols, x - 1, y, target, queue) ||
-		backtrack(map, seen, rows, cols, x, y - 1, target, queue))
+		backtrack(map, tracked, rows, cols, x + 1, y, target, queue) ||
+		backtrack(map, tracked, rows, cols, x, y + 1, target, queue) ||
+		backtrack(map, tracked, rows, cols, x - 1, y, target, queue) ||
+		backtrack(map, tracked, rows, cols, x, y - 1, target, queue))
 	{
 		point = malloc(sizeof(point_t));
 		if (!point)
