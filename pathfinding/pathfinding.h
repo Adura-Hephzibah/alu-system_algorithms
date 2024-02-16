@@ -9,8 +9,6 @@
 #include "graphs.h"
 
 
-#define VISITED 2
-
 /**
  * struct point_s - Structure storing coordinates
  *
