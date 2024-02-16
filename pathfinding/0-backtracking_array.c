@@ -35,8 +35,9 @@ bool findPath(char **map, int rows, int cols, point_t current,
 	/* Define the order of exploration: RIGHT, BOTTOM, LEFT, TOP*/
 	int dx[] = {0, 1, 0, -1};
 	int dy[] = {1, 0, -1, 0};
+	int i;
 
-	for (int i = 0; i < 4; i++)
+	for (i = 0; i < 4; i++)
 	{
 		int nextX = current.x + dx[i];
 		int nextY = current.y + dy[i];
